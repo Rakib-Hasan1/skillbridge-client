@@ -60,7 +60,7 @@ export default function NotFound() {
           </Link>
 
           <Link
-            href="/tutor"
+            href="/tutors"
             className="inline-flex items-center gap-2 rounded-2xl border border-slate-700 px-6 py-3 text-slate-200 hover:bg-slate-800 transition"
           >
             Explore Tutors
