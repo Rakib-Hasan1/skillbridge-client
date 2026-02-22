@@ -7,10 +7,10 @@ import image3 from "../../../public/illustrations/tutor.svg";
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white py-28">
+    <section className="text-slate-700 dark:text-neutral-200 py-28">
       <div className="mx-auto max-w-7xl px-6">
         {/* Section Header */}
-        <h2 className="mb-24 text-center text-4xl font-bold text-slate-900">
+        <h2 className="mb-24 text-center text-4xl font-bold">
           How it Works
         </h2>
 
@@ -29,10 +29,10 @@ export default function HowItWorks() {
 
             {/* Text (col 7 → 12) */}
             <div className="col-span-12 md:col-start-7 md:col-end-13">
-              <h3 className="text-2xl font-semibold text-slate-900">
+              <h3 className="text-2xl font-semibold">
                 Discover Classes
               </h3>
-              <p className="mt-4 text-slate-600 leading-relaxed">
+              <p className="mt-4 leading-relaxed">
                 Browse classes and experts near you. Find the right skills,
                 topics, and learning paths that match your goals.
               </p>
@@ -44,7 +44,7 @@ export default function HowItWorks() {
             {/* Character (col 1 → 6) */}
             <div className="col-span-12 md:col-start-1 md:col-end-7 flex justify-center">
               <Image
-                src={image2}
+                src={image3}
                 alt="Connect with instructors"
                 width={320}
                 height={220}
@@ -53,10 +53,10 @@ export default function HowItWorks() {
 
             {/* Text (col 4 → 10) */}
             <div className="col-span-12 md:col-start-4 md:col-end-10">
-              <h3 className="text-2xl font-semibold text-slate-900">
+              <h3 className="text-2xl font-semibold">
                 Connect with Instructors
               </h3>
-              <p className="mt-4 text-slate-600 leading-relaxed">
+              <p className="mt-4 leading-relaxed">
                 Communicate directly with experienced instructors and mentors
                 who guide you through real-world learning.
               </p>
@@ -68,7 +68,7 @@ export default function HowItWorks() {
             {/* Character (col 4 → 12) */}
             <div className="col-span-12 md:col-start-4 md:col-end-13 flex justify-center">
               <Image
-                src={image3}
+                src={image2}
                 alt="Learn and grow"
                 width={320}
                 height={220}
@@ -77,10 +77,10 @@ export default function HowItWorks() {
 
             {/* Text (col 7 → 12) */}
             <div className="col-span-12 md:col-start-7 md:col-end-13">
-              <h3 className="text-2xl font-semibold text-slate-900">
+              <h3 className="text-2xl font-semibold ">
                 Learn & Grow
               </h3>
-              <p className="mt-4 text-slate-600 leading-relaxed">
+              <p className="mt-4 leading-relaxed">
                 Build skills through hands-on practice, projects, and
                 mentorship—grow confidently in tech.
               </p>

@@ -41,7 +41,7 @@ export default function FeaturedTutors() {
   console.log(tutors);
 
   return (
-    <section className="bg-slate-950 py-24">
+    <section className="bg-slate-800 py-24">
       <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mb-14 text-center">
