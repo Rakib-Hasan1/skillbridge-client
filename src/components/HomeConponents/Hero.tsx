@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
+import Link from "next/link";
 
 export default function HeroSection() {
   return (
@@ -37,19 +38,21 @@ export default function HeroSection() {
                 placeholder="Search by skill or category"
                 className="border-none bg-transparent text-slate-200 placeholder:text-slate-500 focus-visible:ring-0"
               />
-              <Button className="rounded-xl bg-indigo-500 hover:bg-indigo-600">
+              <Button className="rounded-xl bg-indigo-500 hover:bg-indigo-600 cursor-pointer">
                 Search
               </Button>
             </div>
 
             {/* CTA */}
             <div className="mt-6">
-              <Button
-                size="lg"
-                className="rounded-2xl bg-cyan-500 text-slate-950 hover:bg-cyan-400"
-              >
-                JOIN AS TEACHER
-              </Button>
+              <Link href={"/joinAsTeacher"}>
+                <Button
+                  size="lg"
+                  className="rounded-2xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 cursor-pointer"
+                >
+                  JOIN AS TEACHER
+                </Button>
+              </Link>
             </div>
           </motion.div>
 

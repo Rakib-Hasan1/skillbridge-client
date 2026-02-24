@@ -77,20 +77,16 @@ const Navbar = ({
       url: "/tutors",
     },
     {
-      title: "Tech",
-      url: "/tech",
-    },
-    {
-      title: "Community",
-      url: "/community",
-    },
-    {
       title: "About",
       url: "/about",
     },
     {
       title: "Contact",
       url: "/contact",
+    },
+    {
+      title: "Dashboard",
+      url: "/dashboard",
     },
   ],
   auth = {
@@ -194,7 +190,7 @@ const Navbar = ({
 const renderMenuItem = (item: MenuItem) => {
   return (
     <NavigationMenuItem key={item.title}>
-      <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground">
+      <NavigationMenuLink asChild className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground">
         <Link href={item.url}>{item.title}</Link>
       </NavigationMenuLink>
     </NavigationMenuItem>
