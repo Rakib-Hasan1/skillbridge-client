@@ -38,7 +38,7 @@ export default function FeaturedTutors() {
     fetchTutors();
   }, []);
 
-  console.log(tutors);
+  // console.log(tutors);
 
   return (
     <section className="bg-slate-800 py-24">
