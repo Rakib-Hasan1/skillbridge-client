@@ -16,6 +16,7 @@ import { AdminRoutes } from "@/routes/AdminRoutes";
 import { TutorRoutes } from "@/routes/TutorRoutes";
 import { StudentRoutes } from "@/routes/StudentRoutes";
 import { Route } from "@/types";
+import { Roles } from "@/constants/roles";
 
 // This is sample data.
 const data = {
@@ -50,13 +51,13 @@ export function AppSidebar({
   let routes : Route[] = [];
 
   switch (user.role) {
-    case "admin":
+    case Roles.admin:
       routes = AdminRoutes;
       break;
-    case "tutor":
+    case Roles.tutor:
       routes = TutorRoutes;
       break;
-    case "student":
+    case Roles.student:
       routes = StudentRoutes;
       break;
 

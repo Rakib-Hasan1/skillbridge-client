@@ -20,7 +20,7 @@ export default function TeacherProfilePage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API}/profile`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/profile`,
         {
           method: "POST",
           headers: {
