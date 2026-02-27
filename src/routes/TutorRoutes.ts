@@ -6,11 +6,11 @@ export const TutorRoutes: Route[] = [
     items: [
       {
         title: "Set Availability",
-        url: "/set-availability",
+        url: "/tutor-dashboard/set-availability",
       },
       {
         title: "View Sessions",
-        url: "/view-session",
+        url: "/tutor-dashboard/view-session",
       },
     ],
   },

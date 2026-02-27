@@ -1,118 +1,136 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { env } from "../../../../env";
 
-export default function TeacherProfilePage() {
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+export default function JoinAsTeacherPage() {
   const router = useRouter();
 
   const [bio, setBio] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
-  const [subjects, setSubjects] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/profile`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // important if using cookies auth
-          body: JSON.stringify({
-            bio,
-            hourlyRate: Number(hourlyRate),
-            subjects: subjects.split(",").map((s) => s.trim()),
-          }),
-        },
-      );
+  // 🔥 Fetch categories
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/category`, {
+        credentials: "include",
+      });
 
       const data = await res.json();
+      if (res.ok) setCategories(data.data || []);
+    };
 
-      if (!res.ok) {
-        toast.error("Failed to create profile");
-      }
+    load();
+  }, []);
 
-      toast.success("Tutor profile created successfully!");
+  // Select categories
+  const toggleCategory = (id: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
 
-      router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  // Submit profile
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!bio || !hourlyRate || selectedCategories.length === 0) {
+      toast.error("Please fill all fields");
+      return;
     }
+
+    setLoading(true);
+
+    const res = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/profile`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        bio,
+        hourlyRate: Number(hourlyRate),
+        categoryIds: selectedCategories,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      toast.error(data.message);
+      setLoading(false);
+      return;
+    }
+
+    toast.success("Profile created successfully!");
+    router.push("/tutor-dashboard"); // 🔥 Redirect after upgrade
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full dark:bg-gray-900 max-w-lg shadow-lg rounded-xl p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Create Tutor Profile
-        </h2>
+    <div className="max-w-4xl mx-auto p-8">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Join as a Teacher</CardTitle>
+        </CardHeader>
 
-        {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Bio */}
-          <div>
-            <label className="block mb-2 font-medium">Bio</label>
-            <textarea
-              required
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Textarea
+              placeholder="Write about yourself..."
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Write something about yourself..."
-              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              rows={4}
             />
-          </div>
 
-          {/* Hourly Rate */}
-          <div>
-            <label className="block mb-2 font-medium">Hourly Rate (৳)</label>
-            <input
-              required
+            <Input
               type="number"
+              placeholder="Hourly Rate (৳)"
               value={hourlyRate}
               onChange={(e) => setHourlyRate(e.target.value)}
-              placeholder="Enter hourly rate"
-              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-          </div>
 
-          {/* Subjects */}
-          <div>
-            <label className="block mb-2 font-medium">
-              Subjects (comma separated)
-            </label>
-            <input
-              required
-              type="text"
-              value={subjects}
-              onChange={(e) => setSubjects(e.target.value)}
-              placeholder="Math, Physics, English"
-              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+            <div>
+              <p className="font-semibold mb-3">
+                Select Your Teaching Categories
+              </p>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition cursor-pointer"
-          >
-            {loading ? "Creating..." : "Create Tutor Profile"}
-          </button>
-        </form>
-      </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {categories.map((category) => (
+                  <div
+                    key={category.id}
+                    onClick={() => toggleCategory(category.id)}
+                    className={`p-3 rounded-lg border cursor-pointer text-center transition
+                      ${
+                        selectedCategories.includes(category.id)
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted hover:bg-muted/60"
+                      }
+                    `}
+                  >
+                    {category.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button className="w-full" disabled={loading}>
+              {loading ? "Creating Profile..." : "Create Profile"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -6,11 +6,11 @@ export const StudentRoutes:Route[] = [
     items: [
       {
         title: "Book Session",
-        url: "/book-session",
+        url: "/student-dashboard/book-session",
       },
       {
         title: "Profile",
-        url: "/profile",
+        url: "/student-dashboard/profile",
       },
     ],
   },

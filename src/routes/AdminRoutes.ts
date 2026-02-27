@@ -6,19 +6,19 @@ export const AdminRoutes:Route[] = [
     items: [
       {
         title: "Users",
-        url: "/users",
+        url: "/admin-dashboard/users",
       },
       {
         title: "Ban User",
-        url: "/ban-user",
+        url: "/admin-dashboard/ban-user",
       },
       {
         title: "Bookings",
-        url: "/bookings",
+        url: "/admin-dashboard/bookings",
       },
       {
         title: "Manage Categories",
-        url: "/manage-categories",
+        url: "/admin-dashboard/manage-categories",
       },
     ],
   },
