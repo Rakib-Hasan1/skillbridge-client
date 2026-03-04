@@ -5,8 +5,8 @@ export const StudentRoutes:Route[] = [
     title: "Welcome to Student Dashboard",
     items: [
       {
-        title: "Book Session",
-        url: "/student-dashboard/book-session",
+        title: "Booked Sessions",
+        url: "/student-dashboard/booked-sessions",
       },
       {
         title: "Profile",

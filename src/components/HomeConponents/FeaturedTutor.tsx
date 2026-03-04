@@ -33,7 +33,7 @@ export default function FeaturedTutors() {
   }, []);
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 bg-gray-200 dark:bg-slate-900">
       <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mb-14 text-center space-y-3">

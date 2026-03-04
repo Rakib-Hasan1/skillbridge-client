@@ -1,20 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, Mail } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Star, Clock, Mail, Loader2 } from "lucide-react";
 import { env } from "../../../../../env";
 import { TutorProfile } from "@/types";
+import { toast } from "sonner";
+
+interface Slot {
+  id: string;
+  day: string;
+  startTime: string;
+  endTime: string;
+}
 
 export default function TutorDetailsPage() {
   const { id } = useParams<{ id: string }>();
+
   const [tutor, setTutor] = useState<TutorProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [slots, setSlots] = useState<Slot[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [bookingLoading, setBookingLoading] = useState(false);
+
+  const params = useParams();
+  const tutorId = params.id as string;
+
+  // 🔥 Fetch Tutor Profile
   useEffect(() => {
     if (!id) return;
 
@@ -32,6 +56,49 @@ export default function TutorDetailsPage() {
 
     fetchTutor();
   }, [id]);
+
+  // 🔥 Fetch Slots
+  const fetchSlots = async () => {
+    try {
+      const res = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/availability/${id}`);
+      const data = await res.json();
+      setSlots(data.data ?? data);
+    } catch (error) {
+      console.error("Failed to fetch slots", error);
+    }
+  };
+
+  // 🔥 Handle Booking
+  const handleBooking = async () => {
+    if (!selectedSlot) return;
+
+    setBookingLoading(true);
+
+    try {
+      const res = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ slotId: selectedSlot, tutorId }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message);
+        return;
+      }
+
+      toast.success("Booking Successful 🎉");
+
+      setSelectedSlot(null);
+      fetchSlots(); // refresh availability
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -72,7 +139,6 @@ export default function TutorDetailsPage() {
 
               <div>
                 <h1 className="text-xl font-semibold">{tutor.user.name}</h1>
-
                 <div className="mt-1 flex items-center justify-center gap-1 text-yellow-500">
                   <Star className="h-4 w-4 fill-yellow-500" />
                   <span className="text-sm font-medium">
@@ -100,13 +166,64 @@ export default function TutorDetailsPage() {
                 </div>
               )}
 
-              <Button className="w-full rounded-xl mt-4">Book a Session</Button>
+              {/* 🔥 BOOK MODAL */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    className="w-full rounded-xl mt-4"
+                    onClick={fetchSlots}
+                  >
+                    Book a Session
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Select Available Slot</DialogTitle>
+                  </DialogHeader>
+
+                  <div className="space-y-3 mt-4">
+                    {slots.length === 0 ? (
+                      <p className="text-muted-foreground">
+                        No available slots
+                      </p>
+                    ) : (
+                      slots.map((slot) => (
+                        <div
+                          key={slot.id}
+                          onClick={() => setSelectedSlot(slot.id)}
+                          className={`cursor-pointer rounded-lg border p-3 transition ${
+                            selectedSlot === slot.id
+                              ? "border-primary bg-muted"
+                              : "hover:border-primary/50"
+                          }`}
+                        >
+                          <p className="font-medium">{slot.day}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {slot.startTime} - {slot.endTime}
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <Button
+                    className="w-full mt-4"
+                    disabled={!selectedSlot || bookingLoading}
+                    onClick={handleBooking}
+                  >
+                    {bookingLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Confirm Booking
+                  </Button>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 
-          {/* MAIN CONTENT */}
+          {/* MAIN CONTENT unchanged */}
           <div className="md:col-span-2 space-y-12">
-            {/* ABOUT */}
             <div>
               <h2 className="mb-4 text-2xl font-semibold tracking-tight">
                 About the Tutor
@@ -116,16 +233,15 @@ export default function TutorDetailsPage() {
               </p>
             </div>
 
-            {/* Category */}
             <div className="flex flex-wrap gap-3">
               <h2 className="text-2xl font-semibold tracking-tight">
-                Category{" "}
+                Category
               </h2>
               {tutor.categories?.length ? (
                 tutor.categories.map((category) => (
                   <Badge
                     key={category.id}
-                    className="bg-primary/10 text-primary hover:bg-primary/20 transition rounded-full px-4"
+                    className="bg-primary/10 text-primary rounded-full px-4"
                   >
                     {category.name}
                   </Badge>
@@ -135,32 +251,6 @@ export default function TutorDetailsPage() {
                   No categories available
                 </p>
               )}
-            </div>
-
-            {/* AVAILABILITY */}
-            <div>
-              <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-                Availability
-              </h2>
-
-              <Card className="border-dashed">
-                <CardContent className="p-6 text-muted-foreground">
-                  Available slots will be displayed here.
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* REVIEWS */}
-            <div>
-              <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-                Reviews
-              </h2>
-
-              <Card className="border-dashed">
-                <CardContent className="p-6 text-muted-foreground">
-                  Student reviews will appear here.
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
