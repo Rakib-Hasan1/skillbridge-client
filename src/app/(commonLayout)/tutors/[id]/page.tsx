@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,9 +14,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Star, Clock, Mail, Loader2 } from "lucide-react";
-import { env } from "../../../../../env";
-import { TutorProfile } from "@/types";
 import { toast } from "sonner";
+import { env } from "../../../../../env";
 
 interface Slot {
   id: string;
@@ -25,9 +24,33 @@ interface Slot {
   endTime: string;
 }
 
+interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  student: {
+    name: string;
+    image?: string;
+  };
+  createdAt: string;
+}
+
+interface TutorProfile {
+  id: string;
+  bio: string;
+  hourlyRate: number;
+  rating: number;
+  categories?: { id: string; name: string }[];
+  user: {
+    name: string;
+    email?: string;
+    image?: string;
+  };
+  reviews?: Review[];
+}
+
 export default function TutorDetailsPage() {
   const { id } = useParams<{ id: string }>();
-
   const [tutor, setTutor] = useState<TutorProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,10 +58,9 @@ export default function TutorDetailsPage() {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  const params = useParams();
-  const tutorId = params.id as string;
+  const tutorId = id as string;
 
-  // 🔥 Fetch Tutor Profile
+  // 🔥 Fetch Tutor Profile + Reviews
   useEffect(() => {
     if (!id) return;
 
@@ -57,10 +79,12 @@ export default function TutorDetailsPage() {
     fetchTutor();
   }, [id]);
 
-  // 🔥 Fetch Slots
+  // 🔥 Fetch Available Slots
   const fetchSlots = async () => {
     try {
-      const res = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/availability/${id}`);
+      const res = await fetch(
+        `${env.NEXT_PUBLIC_BASE_URL}/availability/${tutorId}`,
+      );
       const data = await res.json();
       setSlots(data.data ?? data);
     } catch (error) {
@@ -90,7 +114,6 @@ export default function TutorDetailsPage() {
       }
 
       toast.success("Booking Successful 🎉");
-
       setSelectedSlot(null);
       fetchSlots(); // refresh availability
     } catch (error) {
@@ -149,6 +172,7 @@ export default function TutorDetailsPage() {
             </CardHeader>
 
             <CardContent className="space-y-5">
+              {/* Hourly Rate */}
               <div className="flex items-center justify-between text-muted-foreground">
                 <span className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
@@ -159,6 +183,7 @@ export default function TutorDetailsPage() {
                 </span>
               </div>
 
+              {/* Email */}
               {tutor.user.email && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Mail className="h-4 w-4" />
@@ -166,7 +191,7 @@ export default function TutorDetailsPage() {
                 </div>
               )}
 
-              {/* 🔥 BOOK MODAL */}
+              {/* Booking Modal */}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
@@ -222,8 +247,9 @@ export default function TutorDetailsPage() {
             </CardContent>
           </Card>
 
-          {/* MAIN CONTENT unchanged */}
+          {/* MAIN CONTENT */}
           <div className="md:col-span-2 space-y-12">
+            {/* About */}
             <div>
               <h2 className="mb-4 text-2xl font-semibold tracking-tight">
                 About the Tutor
@@ -233,9 +259,10 @@ export default function TutorDetailsPage() {
               </p>
             </div>
 
+            {/* Categories */}
             <div className="flex flex-wrap gap-3">
               <h2 className="text-2xl font-semibold tracking-tight">
-                Category
+                Categories
               </h2>
               {tutor.categories?.length ? (
                 tutor.categories.map((category) => (
@@ -250,6 +277,57 @@ export default function TutorDetailsPage() {
                 <p className="text-muted-foreground text-sm">
                   No categories available
                 </p>
+              )}
+            </div>
+
+            {/* Reviews Section */}
+            <div>
+              <h2 className="mb-4 text-2xl font-semibold tracking-tight">
+                Reviews
+              </h2>
+              {tutor.reviews && tutor.reviews.length > 0 ? (
+                <div className="space-y-4">
+                  {tutor.reviews.map((review) => (
+                    <Card key={review.id} className="border shadow-sm">
+                      <CardContent className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          {review.student.image ? (
+                            <Image
+                              src={review.student.image}
+                              alt={review.student.name}
+                              width={32}
+                              height={32}
+                              className="rounded-full"
+                            />
+                          ) : (
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm text-primary font-semibold">
+                              {review.student.name.charAt(0)}
+                            </div>
+                          )}
+                          <span className="font-medium">
+                            {review.student.name}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-1 text-yellow-500">
+                          {Array.from({ length: review.rating }).map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-yellow-500" />
+                          ))}
+                        </div>
+
+                        <p className="text-sm text-muted-foreground">
+                          {review.comment}
+                        </p>
+
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground">No reviews yet</p>
               )}
             </div>
           </div>

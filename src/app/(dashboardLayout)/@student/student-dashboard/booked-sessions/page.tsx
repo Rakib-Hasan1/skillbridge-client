@@ -1,10 +1,14 @@
-
 import { env } from "../../../../../../env";
+import BookedSessionsClient from "./BookedSessionsClient";
 
-export default async function BookedSessions() {
-  const res = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/bookings/my`);
+
+export default async function BookedSessionsPage() {
+  const res = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/bookings/my`, {
+    cache: "no-store",
+  });
 
   const data = await res.json();
-  console.log(data.data);
-  return <div>This is my Booked Sessions Page</div>;
+  const bookings = data.data;
+
+  return <BookedSessionsClient bookings={bookings} />;
 }
