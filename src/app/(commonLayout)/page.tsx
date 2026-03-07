@@ -1,15 +1,19 @@
+"use client";
 import { Footer2 } from "@/components/footer2";
 import FeaturedTutors from "@/components/HomeConponents/FeaturedTutor";
-import HeroSection from "@/components/HomeConponents/Hero";
-import HowItWorks from "@/components/HomeConponents/HowItWorks";
-import { userService } from "@/services/UserService";
+import HeroSearch from "@/components/HomeConponents/HeroSearch";
 
-export default async function Home() {
-  const { data } = await userService.getSession();
-  console.log(data);
+import HowItWorks from "@/components/HomeConponents/HowItWorks";
+import TutorResults from "@/components/HomeConponents/TutorResult";
+import { Tutor } from "@/types";
+import { useState } from "react";
+
+export default function Home() {
+  const [tutors, setTutors] = useState<Tutor[]>([]);
   return (
     <div>
-      <HeroSection />
+      <HeroSearch setTutors={setTutors} />
+      <TutorResults tutors={tutors} />
       <HowItWorks />
       <FeaturedTutors />
       <Footer2 />
