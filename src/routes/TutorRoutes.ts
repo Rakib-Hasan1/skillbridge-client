@@ -12,6 +12,10 @@ export const TutorRoutes: Route[] = [
         title: "View Sessions",
         url: "/tutor-dashboard/view-session",
       },
+      {
+        title: "View Ratings & Reviews",
+        url: "/tutor-dashboard/view-ratings-and-reviews",
+      },
     ],
   },
 ];

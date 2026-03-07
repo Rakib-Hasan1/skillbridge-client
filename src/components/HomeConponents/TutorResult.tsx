@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tutor } from "@/types";
+import Link from "next/link";
+import { Button } from "../ui/button";
 
 export default function TutorGrid({ tutors }: { tutors: Tutor[] }) {
   if (!tutors.length) {
@@ -16,7 +18,7 @@ export default function TutorGrid({ tutors }: { tutors: Tutor[] }) {
     <div className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-8">
       {tutors.map((tutor) => (
         <Card key={tutor.id} className="hover:shadow-lg transition">
-          <CardContent className="p-6 text-center">
+          <CardContent className="p-6 text-center space-y-4">
             {tutor.user.image ? (
               <Image
                 src={tutor.user.image}
@@ -41,6 +43,10 @@ export default function TutorGrid({ tutors }: { tutors: Tutor[] }) {
             <p className="text-muted-foreground mt-2">
               ৳ {tutor.hourlyRate} / hour
             </p>
+            {/* View Profile Button */}
+            <Link href={`/tutors/${tutor.id}`}>
+              <Button className="w-full">View Profile</Button>
+            </Link>
           </CardContent>
         </Card>
       ))}

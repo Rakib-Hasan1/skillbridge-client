@@ -1,7 +1,5 @@
-import React from 'react'
+import { redirect } from "next/navigation";
 
 export default function TutorDashboard() {
-  return (
-    <div>Tutor Dashboard</div>
-  )
+  return redirect("/tutor-dashboard/set-availability");
 }

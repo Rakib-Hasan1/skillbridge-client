@@ -51,7 +51,7 @@ export default function TutorSearch({
           Browse tutors by subject, rating, and price.
         </p>
 
-        <div className="bg-white shadow-lg rounded-xl p-6 grid md:grid-cols-4 gap-6">
+        <div className="bg-background shadow-lg rounded-xl border-2 p-6 grid md:grid-cols-4 gap-6">
           {/* Category */}
           <Select onValueChange={setCategory}>
             <SelectTrigger>

@@ -1,7 +1,5 @@
-import React from 'react'
+import { redirect } from "next/navigation";
 
 export default function StudentDashboard() {
-  return (
-    <div>Student Dashboard</div>
-  )
+  return redirect("/student-dashboard/booked-sessions");
 }
