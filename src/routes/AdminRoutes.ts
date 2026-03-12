@@ -9,10 +9,6 @@ export const AdminRoutes:Route[] = [
         url: "/admin-dashboard/users",
       },
       {
-        title: "Ban User",
-        url: "/admin-dashboard/ban-user",
-      },
-      {
         title: "Bookings",
         url: "/admin-dashboard/bookings",
       },

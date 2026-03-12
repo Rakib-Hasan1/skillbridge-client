@@ -128,7 +128,7 @@ export default function FeaturedTutors() {
                   </CardContent>
 
                   {/* Hover glow */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none rounded-lg" />
+                  <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none rounded-lg" />
                 </Card>
               ))}
         </div>

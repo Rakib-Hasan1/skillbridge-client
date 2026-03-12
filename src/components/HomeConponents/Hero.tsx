@@ -11,7 +11,7 @@ export default function Hero() {
       <div className="absolute inset-0 -z-10 bg-background" />
 
       {/* Glow */}
-      <div className="absolute top-0 left-1/2 -z-10 h-[450px] w-[450px] -translate-x-1/2 rounded-full bg-blue-500/20 blur-[120px] dark:bg-blue-500/10" />
+      <div className="absolute top-0 left-1/2 -z-10 h-112.5 w-112.5 -translate-x-1/2 rounded-full bg-blue-500/20 blur-[120px] dark:bg-blue-500/10" />
 
       <div className="container mx-auto px-6 py-24">
         <div className="grid items-center gap-12 lg:grid-cols-2">
@@ -19,7 +19,7 @@ export default function Hero() {
           <div className="space-y-6">
             <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
               Learn Smarter with{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
                 SkillBridge
               </span>
             </h1>
