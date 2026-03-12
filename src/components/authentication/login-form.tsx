@@ -18,8 +18,10 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
 import { useForm } from "@tanstack/react-form";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import * as z from "zod";
+import { env } from "../../../env";
 
 const formSchema = z.object({
   password: z.string().min(8, "Minimum 8 characters required"),
@@ -27,10 +29,11 @@ const formSchema = z.object({
 });
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const router = useRouter();
   const handleGoogleLogin = async () => {
     const data = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "http://localhost:3000",
+      callbackURL: `${env.FRONTEND_URL}`,
     });
   };
   const form = useForm({
@@ -50,6 +53,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
           return;
         }
         toast.success("User Logged Succesfully", { id: toastId });
+        router.push("/");
       } catch (error) {
         toast.error("Something went wrong please try again", { id: toastId });
       }

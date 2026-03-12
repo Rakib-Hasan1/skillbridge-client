@@ -20,6 +20,8 @@ import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { env } from "../../../env";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name field is required"),
@@ -28,10 +30,11 @@ const formSchema = z.object({
 });
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const router = useRouter();
   const handleGoogleLogin = async () => {
     const data = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "http://localhost:3000",
+      callbackURL: `${env.FRONTEND_URL}`,
     });
   };
   const form = useForm({
@@ -52,6 +55,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           return;
         }
         toast.success("User Created Succesfully", { id: toastId });
+        router.push("/");
       } catch (error) {
         toast.error("Something went wrong please try again", { id: toastId });
       }
